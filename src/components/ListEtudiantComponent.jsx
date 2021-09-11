@@ -77,8 +77,6 @@ class ListEtudiantComponent extends Component {
                                            
                                             {/* <td>{etudiant.seance.id} </td> */}
                                             <td>
-                                                <button onClick={() => this.editEtudiant(etudiant.id)} className="btn btn-info">Update</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.deleteEtudiant(etudiant.id)} className="btn btn-danger">Delete</button>
                                                 <button style={{ marginLeft: "10px" }} onClick={() => this.viewEtudiant(etudiant.id)} className="btn btn-info">View</button>
                                             </td>
                                         </tr>
