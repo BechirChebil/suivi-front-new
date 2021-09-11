@@ -1,84 +1,88 @@
 import React, { Component } from 'react';
-import PlanningService from '../services/PlanningService';
+import TutorService from '../services/TutorService';
 
 import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 
-class ListPlanningComponent extends Component {
+class ListTutorComponent extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
             id: this.props.match.params.id,
-            titre: '',
-            startTime: '',
-            plannings: [],
+            nom: '',
+            prenom: '',
+            mail: '',
+            departement: '',
+            up: '',
+            tutors: [],
             direction: 'asc',
             sortby: "",
             resData: null
         }
-        this.addPlanning = this.addPlanning.bind(this);
-        this.editPlanning = this.editPlanning.bind(this);
-        this.deletePlanning = this.deletePlanning.bind(this);
+        this.addTutor = this.addTutor.bind(this);
+        this.editTutor = this.editTutor.bind(this);
+        this.deleteTutor = this.deleteTutor.bind(this);
         this.sortByHandler = this.sortByHandler.bind(this)
     }
 
     componentDidMount() {
-        PlanningService.getPlannings().then((res) => {
+        TutorService.getTutors().then((res) => {
 
-            this.setState({ plannings: res.data })
+            this.setState({ tutors: res.data })
         })
 
         this.sortTableHandler('id')
 
-        //console.log(this.state.plannings.id   );
+        //console.log(this.state.tutors.id   );
 
     }
 
 
-    addPlanning() {
-        this.props.history.push('/AddPlanning/0');
+    addTutor() {
+        this.props.history.push('/AddTutor/0');
     }
 
-    editPlanning(id) {
-        this.props.history.push(`/AddPlanning/${id}`);
+    editTutor(id) {
+        this.props.history.push(`/AddTutor/${id}`);
     }
 
-    expoterPlanning(id) {
-        PlanningService.exportPlanning(id).then(res => {
-            PlanningService.getPlannings().then((res) => {
+    expoterTutor(id) {
+        TutorService.exportTutor(id).then(res => {
+            TutorService.getTutors().then((res) => {
 
-                this.setState({ plannings: res.data })
+                this.setState({ tutors: res.data })
             })
         })
-        // this.props.history.push(`/ExportPlanning/${id}`);
+        // this.props.history.push(`/ExportTutor/${id}`);
     }
 
-    deletePlanning(id) {
-        PlanningService.deletePlanning(id).then(res => {
-            this.setState({ plannings: this.state.plannings.filter(planning => planning.id !== id) });
+    deleteTutor(id) {
+        TutorService.deleteTutor(id).then(res => {
+            this.setState({ tutors: this.state.tutors.filter(tutor => tutor.id !== id) });
         })
     }
-    viewPlanning(id) {
-        this.props.history.push(`/ViewPlanning/${id}`);
+    viewTutor(id) {
+        this.props.history.push(`/ViewTutor/${id}`);
 
     }
 
     sortByHandler(key, data) {
         return {
-            seances: [].concat(data.seances)
+            equipes: [].concat(data.equipes)
                 .sort((a, b) => (a[key] > b[key] ? 1 : -1)),
             id: data.id,
-            startTime: data.startTime,
-            titre: data.titre,
+            prenom: data.prenom,
+            nom: data.nom,
+            
         }
     }
 
     sortTableHandler = (key) => {
         this.setState({
-            plannings: [].concat(this.state.plannings)
+            tutors: [].concat(this.state.tutors)
                 .sort((a, b) => this.state.direction === 'asc'
                     ? (a[key] > b[key] ? 1 : -1) : a[key] < b[key] ? 1 : -1),
             direction:
@@ -90,7 +94,7 @@ class ListPlanningComponent extends Component {
         },
         )
     }
-    // htmlToPdfContent = (planning) => {
+    // htmlToPdfContent = (tutor) => {
     //     return (
     //         <div>
     //             Title
@@ -100,7 +104,7 @@ class ListPlanningComponent extends Component {
     // }
     //////generat fuction
     exportPDF = (id, indice) => {
-        PlanningService.getPlanningById(id).then((res) => {
+        TutorService.getTutorById(id).then((res) => {
             this.setState({ resData: res.data })
         }).then(() => {
 
@@ -115,7 +119,7 @@ class ListPlanningComponent extends Component {
             var pageHeight = doc.internal.pageSize.height || doc.internal.pageSize.getHeight();
             var pageWidth = doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
 
-            const title = resData.titre + " " + resData.startTime;
+            const title = resData.nom + " " + resData.prenom;
 
             var resDataSorted = this.sortByHandler("date", resData)
             var result = []
@@ -123,8 +127,8 @@ class ListPlanningComponent extends Component {
             var column
             for (var i = 0; i < 4; i++) {
                 if (i == 0) {
-                    res = resDataSorted.seances.map(seance => {
-                        return seance.date?.slice(0, 10) + " " + seance.creneau + "\n" + seance.titre
+                    res = resDataSorted.equipes.map(equipe => {
+                        return equipe.date?.slice(0, 10) + " " + equipe.creneau + "\n" + equipe.nom
                     }
                     )
                     column = [
@@ -133,8 +137,8 @@ class ListPlanningComponent extends Component {
                     ]
                     result = [...result, column]
                 } else if (i == 1) {
-                    res = resDataSorted.seances.map(seance => {
-                        return seance.objectif
+                    res = resDataSorted.equipes.map(equipe => {
+                        return equipe.objectif
                     }
                     )
                     column = [
@@ -144,11 +148,11 @@ class ListPlanningComponent extends Component {
                     result = [...result, column]
                 }
                 else if (i == 2) {
-                    res = resDataSorted.seances.map(seance => {
-                        return seance.phases.map(phase =>
-                            phase.startTime?.slice(11, 16) + " => " +
-                            phase.endTime?.slice(11, 16) + ": " +
-                            phase.titre +
+                    res = resDataSorted.equipes.map(equipe => {
+                        return equipe.etudiants.map(etudiant =>
+                            etudiant.prenom?.slice(11, 16) + " => " +
+                            etudiant.endTime?.slice(11, 16) + ": " +
+                            etudiant.nom +
                             "\n").join("")
                     }
                     )
@@ -158,9 +162,9 @@ class ListPlanningComponent extends Component {
                     ]
                     result = [...result, column]
                 } else if (i == 3) {
-                    res = resDataSorted.seances.map(seance => {
-                        return seance.phases.map(phase =>
-                            phase.rendu + "\n").join("")
+                    res = resDataSorted.equipes.map(equipe => {
+                        return equipe.etudiants.map(etudiant =>
+                            etudiant.rendu + "\n").join("")
                     }
                     )
                     column = [
@@ -233,13 +237,13 @@ class ListPlanningComponent extends Component {
             if (indice > 0) {
 
 
-                resData.seances.map(seance => {
+                resData.equipes.map(equipe => {
                     doc.addPage();
                     doc.setFont("helvetica", "bold");
                     doc.setFontSize(18);
                     doc.setTextColor("#2E8BC0")
                     y = 70;
-                    var title = seance.date?.slice(0, 10) + " " + seance.creneau + "\n" + seance.titre;
+                    var title = equipe.date?.slice(0, 10) + " " + equipe.creneau + "\n" + equipe.nom;
                     doc.text(title, pageWidth / 2, 30, { align: 'center' });
                     doc.setTextColor("#000000")
                     doc.setFontSize(14);
@@ -247,7 +251,7 @@ class ListPlanningComponent extends Component {
                     doc.setFont("helvetica", "normal");
                     doc.setFontSize(12);
                     y = y + 30
-                    var splitObjectif = doc.splitTextToSize(seance.objectif, pageWidth - 30);
+                    var splitObjectif = doc.splitTextToSize(equipe.objectif, pageWidth - 30);
                     for (var i = 0; i < splitObjectif.length; i++) {
                         if (y + 10 > pageHeight) {
                             y = 70;
@@ -263,7 +267,7 @@ class ListPlanningComponent extends Component {
                     doc.setFont("helvetica", "normal");
                     doc.setFontSize(12);
                     y = y + 30
-                    var splitIndEtudiant = doc.splitTextToSize(seance.indicationEtudiant, pageWidth - 30);
+                    var splitIndEtudiant = doc.splitTextToSize(equipe.indicationEtudiant, pageWidth - 30);
                     for (var i = 0; i < splitIndEtudiant.length; i++) {
                         if (y + 10 > pageHeight) {
                             y = 70;
@@ -280,7 +284,7 @@ class ListPlanningComponent extends Component {
                         doc.setFont("helvetica", "normal");
                         doc.setFontSize(12);
                         y = y + 30
-                        var splitIndTuteur = doc.splitTextToSize(seance.indicationTuteur, pageWidth - 30);
+                        var splitIndTuteur = doc.splitTextToSize(equipe.indicationTuteur, pageWidth - 30);
                         for (var i = 0; i < splitIndTuteur.length; i++) {
                             if (y + 10 > pageHeight) {
                                 y = 70;
@@ -291,7 +295,7 @@ class ListPlanningComponent extends Component {
                         }
 
                     }
-                    seance.phases.map(phase => {
+                    equipe.etudiants.map(etudiant => {
                         y = y + 30
                         if (y + 10 > pageHeight) {
                             y = 70;
@@ -300,13 +304,13 @@ class ListPlanningComponent extends Component {
                         doc.setFont("helvetica", "bold");
                         doc.setFontSize(12);
                         doc.setTextColor("#2E8BC0")
-                        doc.text(phase.titre+ ": " + phase.startTime?.slice(11, 16) + " => " +
-                            phase.endTime?.slice(11, 16)  , 30, y)
+                        doc.text(etudiant.nom+ ": " + etudiant.prenom?.slice(11, 16) + " => " +
+                            etudiant.endTime?.slice(11, 16)  , 30, y)
                            
                         doc.setFont("helvetica", "normal");
                         doc.setFontSize(12);
                         doc.setTextColor("#000000")
-                        var splitDescription = doc.splitTextToSize(phase.discription, pageWidth - 70);
+                        var splitDescription = doc.splitTextToSize(etudiant.discription, pageWidth - 70);
                         y = y + 15;
                         for (var i = 0; i < splitDescription.length; i++) {
                             if (y + 10 > pageHeight) {
@@ -321,7 +325,7 @@ class ListPlanningComponent extends Component {
 
             }
             if (indice == 0)
-                doc.save("planning.pdf")
+                doc.save("tutor.pdf")
             else if (indice == 1)
                 doc.save("etudiant.pdf")
             else
@@ -338,8 +342,8 @@ class ListPlanningComponent extends Component {
         return (
 
             <div ><br />
-                <h2 className="text-center">list Planning</h2>
-                <button className="btn btn-primary" onClick={this.addPlanning}>Add Planning</button>
+                <h2 className="text-center">list Tutor</h2>
+                <button className="btn btn-primary" onClick={this.addTutor}>Add Tutor</button>
                 <br></br><br></br>
                 <div className="row">
                     <table className="table table-striped table-bordered">
@@ -351,43 +355,49 @@ class ListPlanningComponent extends Component {
                                         ''
                                     }
                                 </th>
-                                <th onClick={() => this.sortTableHandler('titre')}>
-                                    titre {this.state.sortby === 'titre' ?
+                                <th onClick={() => this.sortTableHandler('nom')}>
+                                    nom {this.state.sortby === 'nom' ?
                                         (this.state.direction === 'asc' ? <FaArrowUp /> : <FaArrowDown />) :
                                         ''
                                     }
                                 </th>
-                                <th onClick={() => this.sortTableHandler('startTime')}>
-                                    start Time {this.state.sortby === 'startTime' ?
+                                <th onClick={() => this.sortTableHandler('prenom')}>
+                                    prenom {this.state.sortby === 'prenom' ?
                                         (this.state.direction === 'asc' ? <FaArrowUp /> : <FaArrowDown />) :
                                         ''
                                     }
                                 </th>
+                                <th style={{ minWidth: "280px" }}>mail</th>
+                                <th style={{ minWidth: "280px" }}>departement</th>
+                                <th style={{ minWidth: "280px" }}>up</th>
                                 <th style={{ minWidth: "280px" }}>Actions</th>
 
                             </tr>
                         </thead>
                         <tbody>
                             {
-                                this.state.plannings.map(
-                                    planning =>
-                                        <tr key={planning.id}>
-                                            <td>{planning.id} </td>
-                                            <td>{planning.titre} </td>
-                                            <td>{planning.startTime} </td>
+                                this.state.tutors.map(
+                                    tutor =>
+                                        <tr key={tutor.id}>
+                                            <td>{tutor.id} </td>
+                                            <td>{tutor.nom} </td>
+                                            <td>{tutor.prenom} </td>
+                                            <td>{tutor.mail} </td>
+                                            <td>{tutor.departement} </td>
+                                            <td>{tutor.up} </td>
                                             <td>
-                                                {/* <button onClick={() => this.editPlanning(planning.id)} className="btn btn-info">Update</button> */}
-                                                {/* <button style={{ marginLeft: "10px" }} onClick={() => this.deletePlanning(planning.id)} className="btn btn-danger">Delete</button> */}
+                                                {/* <button onClick={() => this.editTutor(tutor.id)} className="btn btn-info">Update</button> */}
+                                                {/* <button style={{ marginLeft: "10px" }} onClick={() => this.deleteTutor(tutor.id)} className="btn btn-danger">Delete</button> */}
 
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.viewPlanning(planning.id)} className="btn btn-info">View</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.expoterPlanning(planning.id)} className="btn btn-danger">Export</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(planning.id, 0)} className="btn btn-success">PlanningPDF</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(planning.id, 1)} className="btn btn-success">EtudiantPDF</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(planning.id, 2)} className="btn btn-success">TuteurPDF</button>
+                                                <button style={{ marginLeft: "10px" }} onClick={() => this.viewTutor(tutor.id)} className="btn btn-info">View</button>
+                                                {/* <button style={{ marginLeft: "10px" }} onClick={() => this.expoterTutor(tutor.id)} className="btn btn-danger">Export</button>
+                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(tutor.id, 0)} className="btn btn-success">TutorPDF</button>
+                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(tutor.id, 1)} className="btn btn-success">EtudiantPDF</button>
+                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(tutor.id, 2)} className="btn btn-success">TuteurPDF</button>
                                                 <button style={{ marginLeft: "10px" }} onClick={() => {
                                                     if (window.confirm('Are you sure you wish to delete this item?'))
-                                                        this.deletePlanning(planning.id)
-                                                }} className="btn btn-danger">Delete</button>
+                                                        this.deleteTutor(tutor.id)
+                                                }} className="btn btn-danger">Delete</button> */}
                                             </td>
                                         </tr>
                                 )
@@ -402,4 +412,4 @@ class ListPlanningComponent extends Component {
     }
 }
 
-export default ListPlanningComponent;
+export default ListTutorComponent;
