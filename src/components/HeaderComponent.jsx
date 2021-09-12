@@ -8,7 +8,7 @@ class HeaderComponent extends Component {
             <div>
                 <header>
                     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-                    <img src={img1} width='100' alt="logo" />
+                        <img src={img1} width='100' alt="logo" />
                         <Container>
                             <Navbar.Brand href="http://localhost:3000/">Home page</Navbar.Brand>
                             <Navbar.Toggle aria-controls="responsive-navbar-nav" />
@@ -24,6 +24,7 @@ class HeaderComponent extends Component {
                                     </NavDropdown>
                                     <Nav.Link href="http://localhost:3000/equipes">Liste de Equipes</Nav.Link>
                                     <Nav.Link href="http://localhost:3000/etudiants">Liste de etudiants</Nav.Link>
+                                    <Nav.Link href="http://localhost:3000/suivis">Liste de suivi</Nav.Link>
                                 </Nav>
                                 <Nav>
                                     <Nav.Link href="#deets">profile</Nav.Link>

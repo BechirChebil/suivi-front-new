@@ -14,6 +14,7 @@ import ListTutorComponent from './components/ListTutorComponent';
 // import ViewEtudiantComponent from './components/ViewEtudiantComponent';
 // import ViewEquipeComponent from './components/ViewEquipeComponent';
 import ViewTutorComponent from './components/ViewTutorComponent';
+import ListSuiviComponent from './components/ListSuiviComponent';
 // import UpdateEquipe from './components/UpdateEquipe';
 // import AddEquipe from './components/AddEquipe';
 // import AddEtudiant from './components/AddEtudiant';
@@ -49,6 +50,8 @@ function App() {
 
             <Route path="/ViewEtudiant/:id" component={ViewEtudiantComponent} ></Route>
             <Route path="/ViewEquipe/:id" component={ViewEquipeComponent} ></Route> */}
+            <Route path="/suivis" component={ListSuiviComponent} ></Route>
+
             <Route path="/ViewTutor/:id" component={ViewTutorComponent} ></Route>
 
           </Switch>

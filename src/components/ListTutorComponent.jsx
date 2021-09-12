@@ -15,7 +15,7 @@ class ListTutorComponent extends Component {
             nom: '',
             prenom: '',
             mail: '',
-            departement: '',
+            dept: '',
             up: '',
             tutors: [],
             direction: 'asc',
@@ -26,6 +26,7 @@ class ListTutorComponent extends Component {
         this.editTutor = this.editTutor.bind(this);
         this.deleteTutor = this.deleteTutor.bind(this);
         this.sortByHandler = this.sortByHandler.bind(this)
+        this.voirSuivi = this.voirSuivi.bind(this)
     }
 
     componentDidMount() {
@@ -76,7 +77,7 @@ class ListTutorComponent extends Component {
             id: data.id,
             prenom: data.prenom,
             nom: data.nom,
-            
+
         }
     }
 
@@ -304,9 +305,9 @@ class ListTutorComponent extends Component {
                         doc.setFont("helvetica", "bold");
                         doc.setFontSize(12);
                         doc.setTextColor("#2E8BC0")
-                        doc.text(etudiant.nom+ ": " + etudiant.prenom?.slice(11, 16) + " => " +
-                            etudiant.endTime?.slice(11, 16)  , 30, y)
-                           
+                        doc.text(etudiant.nom + ": " + etudiant.prenom?.slice(11, 16) + " => " +
+                            etudiant.endTime?.slice(11, 16), 30, y)
+
                         doc.setFont("helvetica", "normal");
                         doc.setFontSize(12);
                         doc.setTextColor("#000000")
@@ -336,6 +337,10 @@ class ListTutorComponent extends Component {
 
     }
 
+    voirSuivi() {
+        this.props.history.push(`/suivis`);
+
+    }
     render() {
         /////////////////
         //////////////////////////////////
@@ -344,6 +349,7 @@ class ListTutorComponent extends Component {
             <div ><br />
                 <h2 className="text-center">list Tutor</h2>
                 <button className="btn btn-primary" onClick={this.addTutor}>Add Tutor</button>
+                <button style={{ float: 'right' }} className="btn btn-primary" onClick={this.voirSuivi}>Liste de Suivi</button>
                 <br></br><br></br>
                 <div className="row">
                     <table className="table table-striped table-bordered">
@@ -383,21 +389,16 @@ class ListTutorComponent extends Component {
                                             <td>{tutor.nom} </td>
                                             <td>{tutor.prenom} </td>
                                             <td>{tutor.mail} </td>
-                                            <td>{tutor.departement} </td>
+                                            <td>{tutor.dept} </td>
                                             <td>{tutor.up} </td>
                                             <td>
-                                                {/* <button onClick={() => this.editTutor(tutor.id)} className="btn btn-info">Update</button> */}
-                                                {/* <button style={{ marginLeft: "10px" }} onClick={() => this.deleteTutor(tutor.id)} className="btn btn-danger">Delete</button> */}
-
                                                 <button style={{ marginLeft: "10px" }} onClick={() => this.viewTutor(tutor.id)} className="btn btn-info">View</button>
-                                                {/* <button style={{ marginLeft: "10px" }} onClick={() => this.expoterTutor(tutor.id)} className="btn btn-danger">Export</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(tutor.id, 0)} className="btn btn-success">TutorPDF</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(tutor.id, 1)} className="btn btn-success">EtudiantPDF</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => this.exportPDF(tutor.id, 2)} className="btn btn-success">TuteurPDF</button>
-                                                <button style={{ marginLeft: "10px" }} onClick={() => {
-                                                    if (window.confirm('Are you sure you wish to delete this item?'))
-                                                        this.deleteTutor(tutor.id)
-                                                }} className="btn btn-danger">Delete</button> */}
+                                                <button style={{ marginLeft: "10px" }} className="btn btn-danger">
+                                                    <a target="_blank" style={{ textDecoration: 'none', color: 'white' }} href={"mailto:" + tutor.mail}>
+                                                        Contact
+                                                    </a>
+                                                </button>
+
                                             </td>
                                         </tr>
                                 )

@@ -131,7 +131,7 @@ class ViewTutorComponent extends Component {
                         <div className="row">
                             <label>Departement: </label>
                             <input className="form-control" disabled
-                                value={this.state.tutor.departement} />
+                                value={this.state.tutor.dept} />
                         </div>
                         <br></br>
                         <div className="row">
@@ -221,7 +221,7 @@ class ViewTutorComponent extends Component {
                                                     <td>{etudiant.classe} </td></tr>
                                         )} </td>
 
-                                        
+
 
                                         <td style={{ minWidth: "280px" }}>
                                             <button style={{ marginLeft: "10px" }} onClick={() => this.viewEquipe(equipe.id)} className="btn btn-info">View</button>

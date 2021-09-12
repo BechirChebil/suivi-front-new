@@ -13,6 +13,9 @@ class HomeComponent extends Component {
     cancel2() {
         this.props.history.push('/tutors');
     }
+    suivi() {
+        this.props.history.push('/suivis');
+    }
     historique() {
         this.props.history.push('/tutors');
     }
@@ -23,6 +26,7 @@ class HomeComponent extends Component {
                     <button className="btn btn-danger" onClick={this.cancel2.bind(this)} style={{ margin: "10px", width: "200px" }}>Liste de tuteur</button>
                     <button className="btn btn-danger" onClick={this.cancel1.bind(this)} style={{ margin: "10px", width: "200px" }}>Equipe</button>
                     <button className="btn btn-danger" onClick={this.cancel.bind(this)} style={{ margin: "10px", width: "200px" }}>Etudiant</button>
+                    <button className="btn btn-danger" onClick={this.suivi.bind(this)} style={{ margin: "10px", width: "200px" }}>Suivi</button>
                     <button className="btn btn-danger" onClick={this.historique.bind(this)} style={{ margin: "10px", width: "200px" }}>HISTORIQUE</button>
                     <img src={img} width="600" marginBottom="100" alt="logo" />
                 </center>
