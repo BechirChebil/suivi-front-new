@@ -15,6 +15,8 @@ import ListTutorComponent from './components/ListTutorComponent';
 // import ViewEquipeComponent from './components/ViewEquipeComponent';
 import ViewTutorComponent from './components/ViewTutorComponent';
 import ListSuiviComponent from './components/ListSuiviComponent';
+import ListPlanDayComponent from './components/ListPlanDayComponent';
+import AddPlanDayComponent from './components/AddPlanDayComponent';
 // import UpdateEquipe from './components/UpdateEquipe';
 // import AddEquipe from './components/AddEquipe';
 // import AddEtudiant from './components/AddEtudiant';
@@ -45,13 +47,14 @@ function App() {
 
             <Route path="/tutors" component={ListTutorComponent} ></Route>
             {/* <Route path="/tutorCahier/:id" component={TutorCahierComponent} ></Route> */}
-            {/* <Route path="/AddTutor/:id" component={AddTutorComponent} ></Route>
 
-
+            {/* 
             <Route path="/ViewEtudiant/:id" component={ViewEtudiantComponent} ></Route>
             <Route path="/ViewEquipe/:id" component={ViewEquipeComponent} ></Route> */}
             <Route path="/suivis" component={ListSuiviComponent} ></Route>
-
+            <Route path="/plan_days" component={ListPlanDayComponent} ></Route>
+            <Route path="/add_plan_days" component={AddPlanDayComponent} ></Route>
+            <Route path="/update_plan_days/:id" component={AddPlanDayComponent} ></Route>
             <Route path="/ViewTutor/:id" component={ViewTutorComponent} ></Route>
 
           </Switch>

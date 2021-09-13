@@ -30,6 +30,7 @@ class ListSuiviComponent extends Component {
         this.changeEtat = this.changeEtat.bind(this)
         this.changeEtatExist = this.changeEtatExist.bind(this)
         this.goBack = this.goBack.bind(this)
+        this.voirPlanDay = this.voirPlanDay.bind(this)
 
     }
 
@@ -40,7 +41,7 @@ class ListSuiviComponent extends Component {
         })
         PlanDayService.getPlanDays().then((res) => {
             let result = [].concat(res.data)
-                .sort((a, b) => (a['day_date'] > b['day_date'] || a['creneau'] > b['creneau'] ? 1 : -1))
+                .sort((a, b) => (a['day_date'] + a['creneau'] > b['day_date'] + b['creneau'] ? 1 : -1))
             this.setState({ planDays: result })
         })
         TutorService.getTutors().then((res) => {
@@ -130,6 +131,10 @@ class ListSuiviComponent extends Component {
     goBack = () => {
         this.props.history.goBack()
     }
+    voirPlanDay() {
+        this.props.history.push("/plan_days/");
+
+    }
     render() {
         /////////////////
         //////////////////////////////////
@@ -138,6 +143,7 @@ class ListSuiviComponent extends Component {
             <div ><br />
                 <h2 className="text-center">list Suivi</h2>
                 <button className="btn btn-success" onClick={this.goBack}>Retour</button>
+                <button style={{ float: 'right' }} className="btn btn-primary" onClick={this.voirPlanDay}>Planifier les jours</button>
                 <br></br><br></br>
                 <div className="row">
                     <table className="table table-striped table-bordered" maxWidth="100%">
